@@ -1,11 +1,3 @@
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-uniform float u_time;
-
 const float INFINITY = 9999.99;
 const vec3 BACKGROUND = vec3(0.5, 0.8, 1);
 const int NUM_LIGHTS = 3;
@@ -153,30 +145,31 @@ vec3 trace(Ray ray, Scene scene){
     return color/vec3(bounces);
 }
 
-void main() {
+void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // uv coords
-    vec2 tc = gl_FragCoord.xy/u_resolution.xy;
+    vec2 tc = gl_FragCoord.xy/iResolution.xy;
     
     // scene setup
     Scene scene;
     scene.lights[0] = Light(1.0, vec3(-10, 10, -20), vec3(1,1,1));
     scene.lights[1] = Light(0.5, vec3(20, -30, 40), vec3(1,1,1));
-    scene.spheres[0] = Sphere(vec3(sin(u_time) * 3.0 + 4.0,sin(u_time + 0.5) + 2.5, -5.0), 2.0, Material(vec3(0.25, 0, 0), vec3(1, 0, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
-    scene.spheres[1] = Sphere(vec3(sin(u_time + 0.5) * 3.0 + 5.5,sin(u_time + 0.25) + 3.5, -3.0), 2.0, Material(vec3(0.25, 0.125, 0), vec3(1, 0.5, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
-    scene.spheres[2] = Sphere(vec3(sin(u_time + 1.0) * 3.0 + 6.75,sin(u_time + 0.0) + 4.75, 0.0), 2.0, Material(vec3(0.25, 0.25, 0), vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
-    scene.spheres[3] = Sphere(vec3(sin(u_time + 1.5) * 3.0 + 8.0,sin(u_time - 0.25) + 6.0, 3.0), 2.0, Material(vec3(0.0, 0.25, 0), vec3(0, 1, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
-    scene.spheres[4] = Sphere(vec3(sin(u_time + 2.0) * 3.0 + 9.0,sin(u_time + -0.5) + 7.0, 5.0), 2.0, Material(vec3(0.0, 0.0, 0.25), vec3(0, 0, 1), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
-    scene.spheres[5] = Sphere(vec3(sin(u_time + 2.5) * 3.0 + 10.0,sin(u_time + -0.75) + 8.0, 7.5), 2.0, Material(vec3(0.125, 0.0, 0.25), vec3(0.5, 0, 1), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
-    scene.spheres[6] = Sphere(vec3(8.5, 0, 20), 10.0, Material(vec3(0.125 * sin(u_time), -0.125 *sin(u_time), 0.125 *cos(u_time)), vec3(1.0 * sin(u_time), -1.0 *sin(u_time), 1.0 *cos(u_time)), vec3(0.8, 0.8, 0.8), 40.0, 0.0));
+    scene.spheres[0] = Sphere(vec3(sin(iTime) * 3.0 + 4.0,sin(iTime + 0.5) + 2.5, -5.0), 2.0, Material(vec3(0.25, 0, 0), vec3(1, 0, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
+    scene.spheres[1] = Sphere(vec3(sin(iTime + 0.5) * 3.0 + 5.5,sin(iTime + 0.25) + 3.5, -3.0), 2.0, Material(vec3(0.25, 0.125, 0), vec3(1, 0.5, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
+    scene.spheres[2] = Sphere(vec3(sin(iTime + 1.0) * 3.0 + 6.75,sin(iTime + 0.0) + 4.75, 0.0), 2.0, Material(vec3(0.25, 0.25, 0), vec3(1, 1, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
+    scene.spheres[3] = Sphere(vec3(sin(iTime + 1.5) * 3.0 + 8.0,sin(iTime - 0.25) + 6.0, 3.0), 2.0, Material(vec3(0.0, 0.25, 0), vec3(0, 1, 0), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
+    scene.spheres[4] = Sphere(vec3(sin(iTime + 2.0) * 3.0 + 9.0,sin(iTime + -0.5) + 7.0, 5.0), 2.0, Material(vec3(0.0, 0.0, 0.25), vec3(0, 0, 1), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
+    scene.spheres[5] = Sphere(vec3(sin(iTime + 2.5) * 3.0 + 10.0,sin(iTime + -0.75) + 8.0, 7.5), 2.0, Material(vec3(0.125, 0.0, 0.25), vec3(0.5, 0, 1), vec3(0.5, 0.5, 0.5), 40.0, 0.0));
+    scene.spheres[6] = Sphere(vec3(8.5, 0, 20), 10.0, Material(vec3(0.125 * sin(iTime), -0.125 *sin(iTime), 0.125 *cos(iTime)), vec3(1.0 * sin(iTime), -1.0 *sin(iTime), 1.0 *cos(iTime)), vec3(0.8, 0.8, 0.8), 40.0, 0.0));
     scene.spheres[7] = Sphere(vec3(8.5, 20, 20), 10.0, Material(vec3(0.125, 0.125, 0.125), vec3(1, 1, 1), vec3(0.5, 0.5, 0.5), 40.0, 1.0));
-    scene.spheres[8] = Sphere(vec3(0, sin(u_time)*4.0 + 6.0, 10), 2.0, Material(vec3(0.125, 0.125, 0.125), vec3(1, 1, 1), vec3(0.8, 0.8, 0.8), 40.0, 0.7));
-    scene.spheres[9] = Sphere(vec3(13.5, -sin(u_time)*4.0 + 6.0, 10), 2.0, Material(vec3(0.125, 0.125, 0.125), vec3(1, 1, 1), vec3(0.8, 0.8, 0.8), 40.0, 0.7));
+    scene.spheres[8] = Sphere(vec3(0, sin(iTime)*4.0 + 6.0, 10), 2.0, Material(vec3(0.125, 0.125, 0.125), vec3(1, 1, 1), vec3(0.8, 0.8, 0.8), 40.0, 0.7));
+    scene.spheres[9] = Sphere(vec3(13.5, -sin(iTime)*4.0 + 6.0, 10), 2.0, Material(vec3(0.125, 0.125, 0.125), vec3(1, 1, 1), vec3(0.8, 0.8, 0.8), 40.0, 0.7));
     
     // camera vars
-    vec3 eyep = vec3(-sin(u_time) * 15.0, 0, -20);
+    vec3 eyep = vec3(-sin(iTime) * 15.0, 0, -20);
     vec3 lookp = vec3(scene.spheres[4].pos.x, 10, 20);
+    float aspectRatio = iResolution.x / iResolution.y; // aspect ratio calculation
     vec3 cameraDir = normalize(lookp - eyep);
-    
+
     // ray starts at eye pos and goes through current uv coord
     Ray ray;
     ray.origin = eyep;
@@ -184,16 +177,19 @@ void main() {
     vec3 right = normalize(cross(vec3(0, 1, 0), rayDir));  // calculate the camera's right direction
     vec3 up = normalize(cross(rayDir, right));  // calculate the camera's up direction
 
+    // adjust right direction based on aspect ratio
+    right *= aspectRatio;
+
     // calculate the position on the image plane based on texture coordinates (tc)
     vec3 distanceToImagePlane = vec3(3);
     vec3 imagePlanePos = eyep + rayDir * distanceToImagePlane;
     vec3 offset = (2.0 * tc.x - 1.0) * right + (2.0 * tc.y - 1.0) * up;
 
     ray.dir = normalize(imagePlanePos + offset - eyep);
-    
+
     // cast the ray (one ray per pixel for now)
     vec3 color = trace(ray, scene);
 
     // final color
-    gl_FragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0);
 }
